@@ -1,7 +1,10 @@
 import 'package:easy_extension/easy_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:news_portal/api/auth_api.dart';
+import 'package:news_portal/app/router/app_router.dart';
 import 'package:news_portal/app/translation/app_trans.dart';
 import 'package:news_portal/presentation/widgets/app_logo.dart';
 import 'package:news_portal/presentation/widgets/app_scaffold.dart';
@@ -25,13 +28,23 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void onLogin() {
+  void onLogin() async {
     // TODO: 이메일, 패스워드 가져오기
     final email = _emailController.text;
     final password = _passwordController.text;
 
     debugPrint('이메일: $email');
     debugPrint('패스워드: $password');
+
+    AuthApi.login(email: email, password: password);
+    final auth = await AuthApi.login(email: email, password: password);
+    if (auth == null) {
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+    context.goNamed(AppRoute.newsList.name);
   }
 
   TextField _textField({
@@ -43,6 +56,36 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         hintText: hintText,
+      ),
+    );
+  }
+
+  OutlinedButton _buildSsoButton(String sso) {
+    final logoUrl = {
+      'Google':
+          'https://daelim-doc.fleecy.dev/raiz5jee8eiph0eeFooV/api/v1/projects/866715/resources/354903/image-preview?onlineShareType=apidoc&locale=en-US',
+      'Apple':
+          'https://daelim-doc.fleecy.dev/raiz5jee8eiph0eeFooV/api/v1/projects/866715/resources/354902/image-preview?onlineShareType=apidoc&locale=en-US',
+    };
+    return OutlinedButton(
+      onPressed: () {},
+      child: Row(
+        children: [
+          Image.network(
+            logoUrl[sso] ?? '',
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(LucideIcons.x, size: 24);
+            },
+          ),
+
+          Expanded(
+            child: Center(
+              child: Text(
+                AppTrans.login.signInWith.tr(namedArgs: {'sso': sso}),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -106,45 +149,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
+            10.heightBox,
 
             //구글 로그인
             _buildSsoButton('Google'),
-            10.heightBox,
-
             //애플 로그인
             _buildSsoButton('Apple'),
           ],
         ),
-      ),
-    );
-  }
-
-  OutlinedButton _buildSsoButton(String sso) {
-    final logoUrl = {
-      'Google':
-          'https://api.apidog.com/api/v1/projects/866715/resources/354903/image-preview',
-      'Apple':
-          'https://api.apidog.com/api/v1/projects/866715/resources/354902/image-preview',
-    };
-    return OutlinedButton(
-      onPressed: () {},
-      child: Row(
-        children: [
-          Image.network(
-            logoUrl[sso] ?? '',
-            errorBuilder: (context, error, stackTrace) {
-              return Icon(LucideIcons.x);
-            },
-          ),
-          Icon(LucideIcons.smile),
-          Expanded(
-            child: Center(
-              child: Text(
-                AppTrans.login.signInWith.tr(namedArgs: {'sso': sso}),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
