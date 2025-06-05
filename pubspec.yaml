@@ -23,6 +23,7 @@ dependencies:
   go_router: ^15.1.1
   provider: ^6.1.5
   http:
+  url_launcher: ^6.2.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

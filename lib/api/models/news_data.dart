@@ -6,11 +6,13 @@ class NewsData {
   final String? imageUrl;
   final String description;
   final String pubDate;
+  final String link;
   NewsData({
     required this.title,
     this.imageUrl,
     required this.description,
     required this.pubDate,
+    required this.link,
   });
 
   NewsData copyWith({
@@ -18,30 +20,34 @@ class NewsData {
     String? imageUrl,
     String? description,
     String? pubDate,
+    String? link,
   }) {
     return NewsData(
       title: title ?? this.title,
       imageUrl: imageUrl ?? this.imageUrl,
       description: description ?? this.description,
       pubDate: pubDate ?? this.pubDate,
+      link: link ?? this.link,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
-      'image_Url': imageUrl,
+      'imageUrl': imageUrl,
       'description': description,
       'pubDate': pubDate,
+      'link': link,
     };
   }
 
   factory NewsData.fromMap(Map<String, dynamic> map) {
     return NewsData(
       title: map['title'],
-      imageUrl: map['image_Url'],
+      imageUrl: map['imageUrl'],
       description: map['description'],
       pubDate: map['pubDate'],
+      link: map['link'],
     );
   }
 
@@ -52,7 +58,7 @@ class NewsData {
 
   @override
   String toString() {
-    return 'NewsData(title: $title, imageUrl: $imageUrl, description: $description, pubDate: $pubDate)';
+    return 'NewsData(title: $title, imageUrl: $imageUrl, description: $description, pubDate: $pubDate, link: $link)';
   }
 
   @override
@@ -62,7 +68,8 @@ class NewsData {
     return other.title == title &&
         other.imageUrl == imageUrl &&
         other.description == description &&
-        other.pubDate == pubDate;
+        other.pubDate == pubDate &&
+        other.link == link;
   }
 
   @override
@@ -70,6 +77,7 @@ class NewsData {
     return title.hashCode ^
         imageUrl.hashCode ^
         description.hashCode ^
-        pubDate.hashCode;
+        pubDate.hashCode ^
+        link.hashCode;
   }
 }

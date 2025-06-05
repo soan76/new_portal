@@ -9,6 +9,7 @@
   },
   "newsList": {
     "hotTopic": "Hot Topic",
-    "lastestNews": "lastest News"
+    "latestNews": "Latest News",
+    "noData": "뉴스가 없습니다"
   }
 }

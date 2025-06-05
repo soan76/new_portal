@@ -1,42 +1,34 @@
 import 'dart:convert';
 
-import 'package:easy_extension/easy_extension.dart';
 import 'package:http/http.dart' as http;
 import 'package:news_portal/api/api_config.dart';
 import 'package:news_portal/api/models/news_data.dart';
+import 'package:easy_extension/easy_extension.dart';
 
 class NewsApi {
-  static Future<List<NewsData>?> getList() async {
+  static Future<List<NewsData>?> _getNewsFrom(String url) async {
     //
-    final result = await http
-        .get(
-          Uri.parse(ApiConfig.news.getList), //
-        )
-        .catchError((e) {
-          Log.red('뉴스 목록 가져오기 오류 : $e');
+    try {
+      final response = await http.get(Uri.parse(url));
+      
+      Log.d(' 응답 코드: ${response.statusCode}');
+      Log.d(' 응답 바디: ${response.body}');
 
-          return http.Response(e.toString(), 400);
-        });
+      if (response.statusCode != 200) return null;
 
-    if (result.statusCode != 200) return null;
-
-    final body = result.body;
-    final bodyJson = jsonDecode(body);
-
-    final List<dynamic> newsRaw = bodyJson['news'];
-
-    /*    for(var i = 0; i< newsRaw.length;i++){
-      final raw = newsRaw[i];
-      final data = NewsData.fromMap(raw);
-      newsList.add(data)
-
-      for (var data in newsRaw){
-      newsList.add(Newsdata.fromMap(raw))}
+      final bodyJson = jsonDecode(response.body);
+      final List<dynamic> newsRaw = bodyJson['news'];
+      return newsRaw.map((e) => NewsData.fromMap(e)).toList();
+    } catch (e) {
+      Log.red('뉴스 불러오기 오류: $e');
+      return null;
     }
+  }
+  static Future<List<NewsData>?> getTopic() async {
+    return _getNewsFrom(ApiConfig.news.getTopic);
+  }
 
-    newsRaw.forEach((data)){
-      newsList.add(NewsData.fromMap(data));
-    }*/
-    return newsRaw.map((data) => NewsData.fromMap(data)).toList();
+  static Future<List<NewsData>?> getIssue() async {
+    return _getNewsFrom(ApiConfig.news.getIssue);
   }
 }
