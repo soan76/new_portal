@@ -14,7 +14,7 @@ dependencies:
   ####### Assets
   cupertino_icons: ^1.0.8
   lucide_icons_flutter: ^3.0.2
-
+  google_fonts: ^6.2.1
   ####### Core
   easy_extension:
     git:
